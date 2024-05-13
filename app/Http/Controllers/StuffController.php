@@ -8,11 +8,16 @@ use Illuminate\Http\Request;
 
 class StuffController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:api');
+    }
+
     public function index()
     {
         try{
          // ambil data yang mau ditampilkan
-         $data = Stuff::all()->toArray();
+         $data = Stuff::with('StuffStock')->get();
 
          return ApiFormatter::sendResponse(200, 'success', $data);
                 }catch (\Exception $err) {
@@ -91,17 +96,32 @@ class StuffController extends Controller
         }
     }
 
-    public function destroy($id) {
-        try {
-            $checkProsess = Stuff::where('id', $id)->delete();
+    public function destroy($id)
+{
+    try {
+        $checkProses = Stuff::findOrFail($id);
 
-            if ($checkProsess) {
-                return ApiFormatter::sendResponse(200, 'success', 'Berhasil hapus data stuff!');
-            }
-        } catch (\Exception $err) {
-            return ApiFormatter::sendResponse(400, 'bad request', $err->getMessage());
+        if ($checkProses->inboundStuffs()->exists()) {
+            return ApiFormatter::sendResponse(400, "bad request", "Tidak dapat menghapus data stuff, sudah terdapat data inbound");
+        } 
+        elseif ($checkProses->stuffStocks()->exists()) {
+            return ApiFormatter::sendResponse(400, "bad request", "Tidak dapat menghapus data stuff, sudah terdapat data stuff stock");
         }
+        elseif($checkProses->lendings()->exists()) {
+            return ApiFormatter::sendResponse(400, "bad request", "Tidak dapat menghapus data stuff, sudah terdapat data lending");
+        }
+        elseif($checkProses->outboundStuffs()->exists()) {
+            return ApiFormatter::sendResponse(400, "bad request", "Tidak dapat menghapus data stuff, sudah terdapat data outbound");
+        }
+        else {
+            $checkProses->delete();
+            return ApiFormatter::sendResponse(200, true, "berhasil hapus data barang dengan id $id", ['id' => $id]);
+        }
+
+    } catch (\Exception $err) {
+        return ApiFormatter::sendResponse(400, 'bad request', $err->getMessage());
     }
+}
 
     public function trash() {
         try {

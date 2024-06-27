@@ -23,7 +23,7 @@ $router->get('products', 'ProductsController@index');
 $router->get('transactions', 'TransactionsController@index');
 
 //create
-$router->post('/products/store', 'ProductsController@store');
+$router->post('/products', 'ProductsController@store');
 $router->post('/transactions/store', 'TransactionsController@store');
 
 //show=view product/transaction

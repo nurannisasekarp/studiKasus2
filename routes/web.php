@@ -24,7 +24,11 @@ $router->get('transactions', 'TransactionsController@index');
 
 //create
 $router->post('/products', 'ProductsController@store');
+<<<<<<< HEAD
 $router->post('/transactions/store', 'TransactionsController@store');
+=======
+$router->post('/transactions', 'TransactionsController@store');
+>>>>>>> 992939bb552566f752b511f818005c0230888fc3
 
 //show=view product/transaction
 $router->get('/products/{id}', 'ProductsController@show');

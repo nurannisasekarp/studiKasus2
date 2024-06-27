@@ -13,21 +13,29 @@
 |
 */
 
+
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-$router->group(['middleware' => 'cors'], function ($router) {
-    // Products routes
-    $router->get('/products', 'ProductController@index'); // menampilkan
-    $router->post('/products/create', 'ProductController@store'); // Create produk baru
-    $router->get('/products/{id}', 'ProductController@show'); // Cari product dari id nya
-    $router->patch('/products/{id}', 'ProductController@update'); // Update/edit product
-    $router->delete('/products/{id}', 'ProductController@destroy'); // Delete produc
+//index
+$router->get('products', 'ProductsController@index');
+$router->get('transactions', 'TransactionsController@index');
 
-    // Transactions routes
-    $router->get('/transactions', 'TransactionController@index'); // menampilkan
-    $router->get('/transactions/{id}', 'TransactionController@show'); // mepnampilih transaction dari id
-    $router->patch('/transactions/{id}', 'TransactionController@update'); // Update transaction dari id
-    $router->delete('/transactions/{id}', 'TransactionController@destroy'); // Delete transaction
-});
+//create
+$router->post('/products/store', 'ProductsController@store');
+$router->post('/transactions/store', 'TransactionsController@store');
+
+//show=view product/transaction
+$router->get('/products/{id}', 'ProductsController@show');
+$router->get('/transactions/{id}', 'TransactionsController@show');
+
+
+//delete
+$router->delete('/products/delete/{id}', 'ProductsController@destroy');
+$router->delete('/transactions/delete/{id}', 'TransactionsController@destroy');
+
+
+//update
+$router->patch('/products/update/{id}', 'ProductsController@update');
+$router->patch('/transactions/update/{id}', 'TransactionsController@update');
